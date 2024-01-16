@@ -1,0 +1,66 @@
+---
+title: "Trying to read Excel file from Shiny"
+author: "Dave"
+format: html
+editor: visual
+evaluate:
+  error: true
+---
+
+## Libraries
+
+```{r libraries}
+library(readxl)
+library(httr2)
+library(stringr)
+library(Microsoft365R)
+```
+
+## Define path
+
+```{r def_path}
+xl_path <- "//churcharmy787.sharepoint.com/sites/Research/All Research Staff/test-folder-for-shiny-app/shiny-test.xlsx"
+xl_url <-
+  str_c("https:", xl_path) |> 
+  str_replace_all(" ", "%20")
+  
+```
+
+## Read w/ `read_excel()` directly
+
+```{r read_directly}
+read_excel(xl_path)
+```
+
+## Use HTTR2
+
+```{r use_httr2}
+
+req <- request(xl_url)
+
+req
+
+req_perform(req)
+```
+
+## Use Microsoft365R
+
+```{r use_office}
+app <- "cf81189c-b1be-492e-929e-6e47c3706346"
+
+drive <- get_business_onedrive(app = app)
+# 
+# list_sharepoint_sites(app = app)
+# 
+# get_team(app = app, team_name = "Research")
+# 
+# get_personal_onedrive(app = app)
+
+sheet <- drive$get_item("All Truro measures.xlsx")
+
+temp <- tempfile(fileext = ".xlsx")
+
+sheet$download(dest = temp)
+
+out <- read_excel(temp)
+```
