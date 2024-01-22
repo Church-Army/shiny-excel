@@ -48,7 +48,7 @@ ui_func <- function(req)
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
 
-  output$display_name <- "[...]"
+  output$display_name <- renderText("[...]")
 
   opts <- parseQueryString(isolate(session$clientData$url_search))
   if(is.null(opts$code))
